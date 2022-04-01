@@ -1,0 +1,12 @@
+
+<div class="container">
+
+  <app-search (searchEmitter)="searchSong($event, searchType)"></app-search>
+  <app-search-type (searchTypeEmitter)="searchType = $event"></app-search-type>
+  <ol>
+    <li *ngFor="let song of filteredSongs">
+      {{song.name}} {{song.playlist}} {{song.artist}}
+    </li>
+  </ol>
+</div>
+

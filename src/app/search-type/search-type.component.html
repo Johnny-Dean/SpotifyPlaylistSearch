@@ -1,0 +1,16 @@
+<div class="radio-button-container">
+  <div>
+    <input type="radio" id="song" name="searchType" value="song" (change)="onSearchTypeChange('song')" checked>
+    <label for="song">Song</label>
+  </div>
+
+  <div>
+    <input type="radio" id="artist-name" name="searchType" (change)="onSearchTypeChange('artist')" value="artist-name">
+    <label for="artist-name">Artist</label>
+  </div>
+
+  <div>
+    <input type="radio" id="album" name="searchType" (change)="onSearchTypeChange('album')" value="album">
+    <label for="album">Album</label>
+  </div>
+</div>
