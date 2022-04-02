@@ -6,6 +6,8 @@ import { SongsComponent } from './songs/songs.component';
 import {FormsModule} from "@angular/forms";
 import { SearchComponent } from './search/search.component';
 import { SearchTypeComponent } from './search-type/search-type.component';
+import { LoginComponent } from './login/login.component';
+import { AppRoutingModule } from './app-routing.module';
 
 
 
@@ -14,11 +16,13 @@ import { SearchTypeComponent } from './search-type/search-type.component';
     AppComponent,
     SongsComponent,
     SearchComponent,
-    SearchTypeComponent
+    SearchTypeComponent,
+    LoginComponent
   ],
   imports: [
     BrowserModule,
-    FormsModule
+    FormsModule,
+    AppRoutingModule
   ],
   providers: [],
   bootstrap: [AppComponent]

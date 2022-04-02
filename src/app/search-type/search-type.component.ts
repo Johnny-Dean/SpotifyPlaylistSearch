@@ -7,7 +7,6 @@ import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 })
 export class SearchTypeComponent implements OnInit {
   @Output() searchTypeEmitter = new EventEmitter<string>();
-  searchType?: string;
 
   onSearchTypeChange(searchType: string): void {
     this.searchTypeEmitter.emit(searchType);

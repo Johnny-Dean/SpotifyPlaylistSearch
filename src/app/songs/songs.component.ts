@@ -12,9 +12,10 @@ export class SongsComponent implements OnInit {
   filteredSongs: Song[] = this.songs;
   searchWord?: String;
   // use an enum for readability?
-  @Input() searchType: string = "Song";
+  @Input() searchType: string = "song";
 
   searchSong(searchValue: string, searchType: string): void{
+    // cannnot access with just [searchType] because of TS is there a better way to write this?
     switch (searchType){
       case "song": {
         this.filteredSongs = this.songs.filter(song => {
