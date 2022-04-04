@@ -8,7 +8,7 @@ import { SearchComponent } from './search/search.component';
 import { SearchTypeComponent } from './search-type/search-type.component';
 import { LoginComponent } from './login/login.component';
 import { AppRoutingModule } from './app-routing.module';
-
+import {HttpClientModule} from "@angular/common/http";
 
 
 @NgModule({
@@ -22,7 +22,8 @@ import { AppRoutingModule } from './app-routing.module';
   imports: [
     BrowserModule,
     FormsModule,
-    AppRoutingModule
+    AppRoutingModule,
+    HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent]
