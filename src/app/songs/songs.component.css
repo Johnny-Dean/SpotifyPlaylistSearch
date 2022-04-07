@@ -3,3 +3,25 @@
   flex-direction: column;
   align-items: center;
 }
+
+li, ul, ol {
+  list-style-type: none;
+}
+
+.mat-card {
+  min-height: 400px;
+  max-height: 400px;
+  max-width: 300px;
+  border: 1px solid grey;
+}
+
+.mat-card-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+.playlistButton {
+  background-color: lightblue;
+}

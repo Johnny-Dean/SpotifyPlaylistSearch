@@ -1,12 +1,21 @@
-
-<div class="container">
-
-  <app-search (searchEmitter)="searchSong($event, searchType)"></app-search>
-  <app-search-type (searchTypeEmitter)="searchType = $event"></app-search-type>
-  <ol>
-    <li *ngFor="let song of filteredSongs">
-      {{song.name}} {{song.playlist}} {{song.artist}}
-    </li>
-  </ol>
+<div>
+  <app-search></app-search>
+  <mat-grid-list cols="4" gutterSize="5px">
+    <ng-container *ngFor="let playlist of playlists">
+      <!--  make a custom pipe to search through cards  -->
+      <mat-grid-tile *ngFor="let song of playlist.songs" >
+        <mat-card>
+          <img mat-card-image src={{song.album.albumArt}} />
+          <mat-card-content>
+            {{song.name}} <br />
+            {{song.artistName}} - {{song.album.albumName}}
+          </mat-card-content>
+        </mat-card>
+      </mat-grid-tile>
+    </ng-container>
+  </mat-grid-list>
 </div>
+
+
+
 

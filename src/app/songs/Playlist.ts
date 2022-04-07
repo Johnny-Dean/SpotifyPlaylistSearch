@@ -1,7 +1,15 @@
-import {Song} from "./song";
-
 export interface playlist {
   name: string,
-  // songs: Song[]
+  image: string,
+  songs: song[]
+}
+
+export interface song {
+    name: string,
+    artistName: string,
+    album: {
+      albumArt: string,
+      albumName: string
+    }
 }
 

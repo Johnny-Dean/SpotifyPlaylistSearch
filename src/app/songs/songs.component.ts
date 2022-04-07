@@ -1,8 +1,9 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {Song} from "./song";
-import {SONGS} from "./mock-songs";
-import {SpotifyApiService} from "../spotify-api.service";
-import {playlist} from "./Playlist";
+import {SpotifyApiService} from "../services/spotify-api.service";
+import {playlist, song} from "./Playlist";
+import {HashService} from "../services/hash.service";
+import {AuthService} from "../services/auth.service";
+import {map} from "rxjs";
 
 @Component({
   selector: 'app-songs',
@@ -10,61 +11,46 @@ import {playlist} from "./Playlist";
   styleUrls: ['./songs.component.css']
 })
 export class SongsComponent implements OnInit {
-  songs: Song[] = SONGS;
-  filteredSongs: Song[] = this.songs;
   playlists: playlist[] = [];
-  searchWord?: String;
-  // use an enum for readability?
-  @Input() searchType: string = "song";
-
-  searchSong(searchValue: string, searchType: string): void{
-    // cannnot access with just [searchType] because of TS is there a better way to write this?
-    switch (searchType){
-      case "song": {
-        this.filteredSongs = this.songs.filter(song => {
-          return song.name.toLowerCase().includes(searchValue.toLowerCase())
-        })
-        break;
+  @Input() searchSongTerm?: string;
+  parseSongObject(trackObj: any):song {
+    return {
+      name: trackObj.track.name,
+      artistName: trackObj.track.artists[0].name,
+      album: {
+        albumArt: trackObj.track.album.images[0].url,
+        albumName: trackObj.track.album.name
       }
-      case "album": {
-        this.filteredSongs = this.songs.filter(song => {
-          return song.playlist.toLowerCase().includes(searchValue.toLowerCase())
-        })
-        break;
-      }
-      case "artist": {
-        this.filteredSongs = this.songs.filter(song => {
-          return song.artist.toLowerCase().includes(searchValue.toLowerCase())
-        })
-        break;
-      }
-    }
-
+    };
   }
-// when populating our playlists array we should make api calls to get the songs for the playlist array and populate the songs array in our playlist
-  populatePlaylist(playListArr: any) {
-    for (const playlist of playListArr){
-      console.log(this.spotify.getPlaylistSongs(playlist.tracks.href));
-      this.playlists.push({name: playlist.name});
+
+  populatePlaylists(playlistArr: any){
+    for (const playlist of playlistArr){
+      const playlistTracks: song[] = [];
+
+      this.spotify.getPlaylistSongs(playlist.tracks.href).pipe(
+        map((res) => {
+          (
+            res.items.map((trackObj: any) => {
+              playlistTracks.push(this.parseSongObject(trackObj));
+          }))
+        })
+      ).subscribe()
+      this.playlists.push({name: playlist.name, image: playlist.images[0], songs: playlistTracks});
     }
   }
 
-
-  constructor(private spotify: SpotifyApiService ) { }
-
+  constructor(private spotify: SpotifyApiService, private hash: HashService, private auth: AuthService) { }
 
   ngOnInit(): void {
-    // any is bad here very bad we want to use ts to describe what is going on at all times what is a good workaroud for this?
-    this.spotify.getPlaylists().subscribe((res: any) => {
-      console.log(res)
-      this.populatePlaylist(res.items)
-      // probably should handle this in the api call service lol..
-      if(res.next){
-        this.spotify.getAdditionalPlaylists().subscribe((res:any) => this.populatePlaylist(res.items))
-      }
-    });
 
-    console.log(this.playlists)
+    const hashInBrowser = window.location.hash;
+    this.auth.authenticateUser(this.hash.parseHash(hashInBrowser))
+
+    // any is bad here very bad we want to use ts to describe what is going on at all times what is a good workaroud for this?
+    this.spotify.getPlaylists("0","20").subscribe((res: any) => {
+      this.populatePlaylists(res.items)
+    })
   }
 
 }
