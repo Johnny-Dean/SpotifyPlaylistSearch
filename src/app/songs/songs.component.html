@@ -1,18 +1,20 @@
 <div>
-  <div class="header-container">
+
     <app-searchbar (searchTermEmitter)="onTermChange($event)"></app-searchbar>
-  </div>
-  <mat-grid-list cols="4" gutterSize="5px">
+
+  <mat-grid-list cols="5" gutterSize="1em">
       <!--  make a custom pipe to search through cards  -->
       <mat-grid-tile *ngFor="let song of (songs | trackFilter:filterSong)" >
         <mat-card>
+          <img mat-card-image src={{song.album.albumArt}} />
+          <div class="playlist-overlay">
+            <ng-container  *ngFor="let playlist of song.playlists">
+              {{playlist}}
+            </ng-container>
+          </div>
           <mat-card-content>
             {{song.name}} - {{song.artistName}}
           </mat-card-content>
-          <img mat-card-image src={{song.album.albumArt}} />
-          <div class="playlist-overlay" *ngFor="let playlist of song.playlists">
-            {{playlist}}
-          </div>
         </mat-card>
       </mat-grid-tile>
   </mat-grid-list>
