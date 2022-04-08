@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 @Injectable({
   providedIn: 'root'
 })
-// should be named auth service
+
 export class HashService {
   private CLIENT_ID: string = "61a11e8fbef94b8f8c2a99ca365504b8";
   private SPOTIFY_AUTHORIZE_ENDPOINT: string = "https://accounts.spotify.com/authorize";
