@@ -2,7 +2,7 @@
 I created this project because the native Spotify app, as far as I know, does not allow you to search through all your playlists for a certain artist, songs, or album at once. 
 This has come up often enough that I decided to spend some time developing something to solve this problem.
 The web app will prompt you to log in and afterwards you will be redirected to a simple display and search of your playlist.
-![Screenshot](images.githubusercontent.com/73153392/162533082-cee9fa9e-6392-4445-91d6-64f7c9863b50.png)
+![Screenshot](https://user-images.githubusercontent.com/73153392/162533393-4bd2ff65-87ab-4c45-8932-cf1d9f820fe6.png)
 </br>
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 13.3.1.
 
