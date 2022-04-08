@@ -1,6 +1,6 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {SpotifyApiService} from "../services/spotify-api.service";
-import {playlist, song} from "./Playlist";
+import {song} from "./Playlist";
 import {HashService} from "../services/hash.service";
 import {AuthService} from "../services/auth.service";
 import {map} from "rxjs";
@@ -11,37 +11,48 @@ import {map} from "rxjs";
   styleUrls: ['./songs.component.css']
 })
 export class SongsComponent implements OnInit {
-  playlists: playlist[] = [];
+  songs: song[] = [];
   @Input() filterSong?: string = '';
 
   onTermChange(searchTerm: string){
     this.filterSong = searchTerm;
   }
 
-  parseSongObject(trackObj: any):song {
+  parseSongObject(trackObj: any, playlistName: string):song {
     return {
       name: trackObj.track.name,
       artistName: trackObj.track.artists[0].name,
       album: {
         albumArt: trackObj.track.album.images[0].url,
         albumName: trackObj.track.album.name
-      }
+      },
+      playlists: [`${playlistName}`]
     };
   }
 
-  populatePlaylists(playlistArr: any){
-    for (const playlist of playlistArr){
-      const playlistTracks: song[] = [];
+  checkDuplicates(checkTrack: any, playlistName: string): boolean{
+    for (const s of this.songs) {
+      if(s.name === checkTrack.track.name){
+        s.playlists.push(playlistName)
+        return true;
+      }
+    }
+    return false;
+  }
 
+  populatePlaylists(playlistArr: any): void{
+    for (const playlist of playlistArr){
       this.spotify.getPlaylistSongs(playlist.tracks.href).pipe(
         map((res) => {
           (
             res.items.map((trackObj: any) => {
-              playlistTracks.push(this.parseSongObject(trackObj));
+              let duplicateFound: boolean = this.checkDuplicates(trackObj, playlist.name);
+              if(!duplicateFound) {
+                this.songs.push(this.parseSongObject(trackObj, playlist.name));
+              }
           }))
         })
       ).subscribe()
-      this.playlists.push({name: playlist.name, image: playlist.images[0], songs: playlistTracks});
     }
   }
 
