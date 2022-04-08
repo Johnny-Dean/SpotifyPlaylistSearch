@@ -1,4 +1,4 @@
-# SpotifyProject
+# Search All Spotify Playlists
 I created this project because the native Spotify app, as far as I know, does not allow you to search through all your playlists for a certain artist, songs, or album at once. 
 This has come up often enough that I decided to spend some time developing something to solve this problem.
 The web app will prompt you to log in and afterwards you will be redirected to a simple display and search of all of your public spotify playlists.
