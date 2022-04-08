@@ -10,7 +10,7 @@ li, ul, ol {
 
 .mat-card {
   min-height: 400px;
-  max-height: 400px;
+  max-height: 350px;
   max-width: 300px;
   border: 1px solid grey;
 }
@@ -24,4 +24,17 @@ li, ul, ol {
 
 .playlistButton {
   background-color: lightblue;
+}
+
+.header-container {
+  padding-top: 2em;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.playlist-overlay {
+  position: relative;
+  bottom: 50px;
 }

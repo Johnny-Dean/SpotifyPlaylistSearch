@@ -11,8 +11,8 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import {MatCardModule} from "@angular/material/card";
 import {MatGridListModule} from "@angular/material/grid-list";
 import {MatButtonModule} from "@angular/material/button";
-import { SearchComponent } from './search/search.component';
 import { TrackFilterPipe } from './track-filter.pipe';
+import { SearchbarComponent } from './searchbar/searchbar.component';
 
 
 @NgModule({
@@ -20,8 +20,8 @@ import { TrackFilterPipe } from './track-filter.pipe';
     AppComponent,
     SongsComponent,
     LoginComponent,
-    SearchComponent,
-    TrackFilterPipe
+    TrackFilterPipe,
+    SearchbarComponent
   ],
   imports: [
     BrowserModule,

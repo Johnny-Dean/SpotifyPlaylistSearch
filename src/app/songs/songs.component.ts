@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {SpotifyApiService} from "../services/spotify-api.service";
 import {playlist, song} from "./Playlist";
 import {HashService} from "../services/hash.service";
@@ -12,7 +12,12 @@ import {map} from "rxjs";
 })
 export class SongsComponent implements OnInit {
   playlists: playlist[] = [];
-  @Input() searchSongTerm?: string;
+  @Input() filterSong?: string = '';
+
+  onTermChange(searchTerm: string){
+    this.filterSong = searchTerm;
+  }
+
   parseSongObject(trackObj: any):song {
     return {
       name: trackObj.track.name,
@@ -40,17 +45,24 @@ export class SongsComponent implements OnInit {
     }
   }
 
+  getPlaylist(offset: number, limit: number){
+    this.spotify.getPlaylists( offset.toString(), limit.toString() ).subscribe((res: any) => {
+      this.populatePlaylists(res.items)
+      if (res.next){
+        this.getPlaylist(offset + 20, limit + 20);
+      }
+    })
+  }
+
   constructor(private spotify: SpotifyApiService, private hash: HashService, private auth: AuthService) { }
 
   ngOnInit(): void {
 
     const hashInBrowser = window.location.hash;
     this.auth.authenticateUser(this.hash.parseHash(hashInBrowser))
-
     // any is bad here very bad we want to use ts to describe what is going on at all times what is a good workaroud for this?
-    this.spotify.getPlaylists("0","20").subscribe((res: any) => {
-      this.populatePlaylists(res.items)
-    })
+    // recursive api calls?
+    this.getPlaylist(0, 20)
   }
 
 }
