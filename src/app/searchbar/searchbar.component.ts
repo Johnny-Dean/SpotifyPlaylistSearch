@@ -10,7 +10,6 @@ export class SearchbarComponent implements OnInit {
   searchTerm?: string = "";
 
   onChange(): void {
-    console.log(this.searchTerm)
     this.searchTermEmitter.emit(this.searchTerm)
   }
 

@@ -14,7 +14,8 @@ export class HashService {
   return `${this.SPOTIFY_AUTHORIZE_ENDPOINT}?client_id=${this.CLIENT_ID}&redirect_uri=${this.REDIRECT_URI_AFTER_AUTH}&scope=${this.SCOPES}&response_type=token&show_dialog=true`;
   }
 
-  parseHash(hash: string): string {
+  parseHash(): string {
+    const hash = window.location.hash;
     const stringAfterHash = hash.substring(1);
     const parametersInURL = stringAfterHash.split("&")
     const parameterSplit = parametersInURL.reduce((acc:{[key: string]: string}, currentVal) => {

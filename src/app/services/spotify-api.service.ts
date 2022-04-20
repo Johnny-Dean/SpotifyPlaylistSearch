@@ -7,6 +7,8 @@ import {Observable} from "rxjs";
 })
 export class SpotifyApiService {
   token = localStorage.getItem("access_token")
+
+
   constructor(private http: HttpClient) { }
 
   getPlaylists = (offset: string, limit: string) => {
@@ -18,9 +20,10 @@ export class SpotifyApiService {
   }
 
   // another any
-  getPlaylistSongs(url: string): Observable<any>{
+  getPlaylistSongs(playlistTracksUrl: string): Observable<any>{
     // any is bad here again!!! ask sif
-     return this.http.get(url, {
+    // should I do like interface {} and map the values in our res here to that or?
+     return this.http.get(playlistTracksUrl, {
        headers: {
          Authorization: `Bearer ${this.token}`,
        },

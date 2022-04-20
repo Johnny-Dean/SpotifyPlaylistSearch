@@ -2,14 +2,14 @@ import {Component, Input, OnInit} from '@angular/core';
 import {song} from "./song";
 import {HashService} from "../services/hash.service";
 import {AuthService} from "../services/auth.service";
-import {ParseSongsService} from "../services/parse-songs.service";
+import {SongsService} from "../services/songs.service";
 
 @Component({
   selector: 'app-songs',
-  templateUrl: './songs.component.html',
-  styleUrls: ['./songs.component.css']
+  templateUrl: './songs.component.html'
 })
 export class SongsComponent implements OnInit {
+
   songs: song[] = [];
   @Input() filterSong?: string = '';
 
@@ -17,16 +17,11 @@ export class SongsComponent implements OnInit {
     this.filterSong = searchTerm;
   }
 
-  getSongs(){
-    this.songs = this.songHelper.getSongs()
-  }
-
-  constructor(private songHelper: ParseSongsService, private hash: HashService, private auth: AuthService) { }
+  constructor(private spotifySongs: SongsService, private hash: HashService, private auth: AuthService) { }
 
   ngOnInit(): void {
-    const hashInBrowser = window.location.hash;
-    this.auth.authenticateUser(this.hash.parseHash(hashInBrowser))
-    this.getSongs();
+    this.auth.authenticateUser(this.hash.parseHash());
+    this.songs = this.spotifySongs.getSongs();
   }
 
 }

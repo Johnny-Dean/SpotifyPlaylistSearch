@@ -6,8 +6,7 @@ import {map} from "rxjs";
 @Injectable({
   providedIn: 'root'
 })
-export class ParseSongsService {
-  // is this proper
+export class SongsService {
   songs: song[] = [];
 
   parseSongObject(trackObj: any, playlistName: string):song {
@@ -15,16 +14,17 @@ export class ParseSongsService {
       name: trackObj.track.name,
       artistName: trackObj.track.artists[0].name,
       album: {
-        albumArt: trackObj.track.album.images[0].url,
+        albumArt: trackObj.track.album.images[0]?.url,
         albumName: trackObj.track.album.name
       },
       playlists: [`${playlistName}`]
     };
   }
 
-  checkDuplicates(checkTrack: any, playlistName: string): boolean{
+  checkDuplicates(track: any, playlistName: string): boolean{
+    if (!track) return true;
     for (const s of this.songs) {
-      if(s.name === checkTrack.track.name){
+      if(s.name === track.name){
         s.playlists.push(playlistName)
         return true;
       }
@@ -32,31 +32,32 @@ export class ParseSongsService {
     return false;
   }
 
-  populatePlaylists(playlistArr: any): void{
+  populateSongs(playlistArr: any): void {
     for (const playlist of playlistArr){
       this.spotify.getPlaylistSongs(playlist.tracks.href).pipe(
-        map((res) => {
+        map((response) => {
           (
-            res.items.map((trackObj: any) => {
-              let duplicateFound: boolean = this.checkDuplicates(trackObj, playlist.name);
-              if(!duplicateFound) {
-                this.songs.push(this.parseSongObject(trackObj, playlist.name));
-              }
+            response.items.map(
+              (trackObj: any) => {
+              let duplicateFound = this.checkDuplicates(trackObj.track, playlist.name);
+              if(!duplicateFound) this.songs.push(this.parseSongObject(trackObj, playlist.name));
             }))
         })
       ).subscribe()
     }
   }
 
+  // if our response contains next it means theres more playlists we need to get
+  // we increment the offset
   getPlaylist(offset: number, limit: number){
-      this.spotify.getPlaylists( offset.toString(), limit.toString() ).subscribe((res: any) => {
-        this.populatePlaylists(res.items)
-        if (res.next){
-          this.getPlaylist(offset + 20, limit + 20);
-        }
+    this.spotify.getPlaylists(offset.toString(), limit.toString()).subscribe(
+        (response: any) => {
+        this.populateSongs(response.items)
+        if (response.next) this.getPlaylist(offset + 20, limit + 20);
       })
   }
 
+  // tried to create my own promise from the recursive calling but it ended up being kind of confusing
   getSongs(){
     this.getPlaylist(0, 20)
     return this.songs
