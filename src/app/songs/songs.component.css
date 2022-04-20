@@ -1,4 +1,7 @@
 .mat-card {
-  min-height: 350px;
+  min-height: 400px;
   border: black 1px solid;
+}
+.song-container{
+  margin: 20px;
 }
