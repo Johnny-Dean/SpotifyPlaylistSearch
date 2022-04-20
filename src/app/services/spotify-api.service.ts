@@ -11,8 +11,8 @@ export class SpotifyApiService {
 
   constructor(private http: HttpClient) { }
 
-  getPlaylists = (offset: string, limit: string) => {
-   return this.http.get(`https://api.spotify.com/v1/me/playlists?offset=${offset}&limit=${limit}`, {
+  getPlaylists = (offset: string) => {
+   return this.http.get(`https://api.spotify.com/v1/me/playlists?offset=${offset}&limit=20`, {
      headers: {
        Authorization: `Bearer ${this.token}`,
      },

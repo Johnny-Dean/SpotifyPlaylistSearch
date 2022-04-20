@@ -6,7 +6,9 @@ import {SongsService} from "../services/songs.service";
 
 @Component({
   selector: 'app-songs',
-  templateUrl: './songs.component.html'
+  templateUrl: './songs.component.html',
+  styleUrls: ['./songs.component.css']
+
 })
 export class SongsComponent implements OnInit {
 

@@ -1,15 +1,13 @@
 <div>
   <app-searchbar (searchTermEmitter)="onTermChange($event)"></app-searchbar>
 
-  <mat-grid-list cols="4" gutterSize="1em">
-      <mat-grid-tile *ngFor="let song of (songs | trackFilter:filterSong)" >
+  <mat-grid-list cols="4" gutterSize=".5em" rowHeight="450">
+      <mat-grid-tile *ngFor="let song of (songs | trackFilter:filterSong)">
         <mat-card>
           <img mat-card-image src={{song.album.albumArt}} />
-          <div class="playlist-overlay">
             <ng-container  *ngFor="let playlist of song.playlists">
               {{playlist}}.
             </ng-container>
-          </div>
           <mat-card-content>
             {{song.name}} - {{song.artistName}}
           </mat-card-content>

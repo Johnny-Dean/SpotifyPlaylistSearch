@@ -22,6 +22,7 @@ export class SongsService {
   }
 
   checkDuplicates(track: any, playlistName: string): boolean{
+    // bad but error handling if spotify api returns us a null track name
     if (!track) return true;
     for (const s of this.songs) {
       if(s.name === track.name){
@@ -49,17 +50,19 @@ export class SongsService {
 
   // if our response contains next it means theres more playlists we need to get
   // we increment the offset
-  getPlaylist(offset: number, limit: number){
-    this.spotify.getPlaylists(offset.toString(), limit.toString()).subscribe(
+  getPlaylist(offset: number){
+    this.spotify.getPlaylists(offset.toString()).subscribe(
         (response: any) => {
         this.populateSongs(response.items)
-        if (response.next) this.getPlaylist(offset + 20, limit + 20);
+        if (response.next) this.getPlaylist(offset + 20);
       })
   }
 
   // tried to create my own promise from the recursive calling but it ended up being kind of confusing
+  // actually have no idea how its not working, i think its because the recursive function pushes the calls onto the stack
+  // and dont return until its all done
   getSongs(){
-    this.getPlaylist(0, 20)
+    this.getPlaylist(0)
     return this.songs
   }
 
