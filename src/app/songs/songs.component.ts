@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {song} from "./song";
+import {Song} from "./song";
 import {HashService} from "../services/hash.service";
 import {AuthService} from "../services/auth.service";
 import {SongsService} from "../services/songs.service";
@@ -12,7 +12,7 @@ import {SongsService} from "../services/songs.service";
 })
 export class SongsComponent implements OnInit {
 
-  songs: song[] = [];
+  songs: Song[] = [];
   @Input() filterSong?: string = '';
 
   onTermChange(searchTerm: string){

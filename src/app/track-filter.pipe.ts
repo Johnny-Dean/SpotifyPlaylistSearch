@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import {song} from "./songs/song";
+import {Song} from "./songs/song";
 
 @Pipe({
   name: 'trackFilter',
@@ -7,7 +7,7 @@ import {song} from "./songs/song";
 })
 export class TrackFilterPipe implements PipeTransform {
 
-  trackMatchesFilter(track: song, filter: string): boolean{
+  trackMatchesFilter(track: Song, filter: string): boolean{
     if (track.name.toLowerCase().includes(filter.toLowerCase())){
       return true;
     }
@@ -20,7 +20,7 @@ export class TrackFilterPipe implements PipeTransform {
     return false;
   }
 
-  transform(tracks: song[], filter?: string): song[] {
+  transform(tracks: Song[], filter?: string): Song[] {
     if(!filter){
       return tracks;
     }

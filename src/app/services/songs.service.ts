@@ -1,21 +1,57 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {SpotifyApiService} from "./spotify-api.service";
-import {song} from "../songs/song";
-import {map} from "rxjs";
+import {Song} from "../songs/song";
+import {map, Observable} from "rxjs";
 
 @Injectable({
   providedIn: 'root'
 })
 export class SongsService {
-  songs: song[] = [];
+  songs: Song[] = [];
 
-  parseSongObject(trackObj: any, playlistName: string):song {
+  getSongs(){
+    this.getPlaylists(0)
+      .subscribe((playlists: any) => this.parsePlaylists(playlists));
+    return this.songs;
+  }
+
+  // if our response contains next it means theres more playlists we need to get
+  // we increment the offset to get the next batch of spotify playlists
+  getPlaylists(offset: number): Observable<any> {
+   return this.spotify.getPlaylistCollection(offset).pipe(
+      map((playlistCollection: any) => {
+        if (playlistCollection.next) this.getPlaylists(offset + 20);
+        return playlistCollection.items;
+      }))
+  }
+
+  parsePlaylists(playlists: any[]): void {
+    for (const playlist of playlists){
+      const playlistSongs = this.spotify.getSongsFromPlaylist(playlist.tracks.href);
+      playlistSongs.pipe(this.addSongs(playlist.name)).subscribe()
+    }
+  }
+
+  // is the extra pipe needed or can i just return the map?
+  addSongs(playlistName: string){
+    return map((response: any) => {
+        response.items.map(
+          (spotifyTrack: any) => {
+            let duplicateFound = this.checkDuplicates(spotifyTrack.track, playlistName);
+            if(!duplicateFound) this.songs.push(this.castSpotifyTrackToSong(spotifyTrack, playlistName));
+          }
+        )
+      })
+  }
+
+
+  castSpotifyTrackToSong(spotifyTrack: any, playlistName: string):Song {
     return {
-      name: trackObj.track.name,
-      artistName: trackObj.track.artists[0].name,
+      name: spotifyTrack.track.name,
+      artistName: spotifyTrack.track.artists[0].name,
       album: {
-        albumArt: trackObj.track.album.images[0]?.url,
-        albumName: trackObj.track.album.name
+        albumArt: spotifyTrack.track.album.images[0]?.url,
+        albumName: spotifyTrack.track.album.name
       },
       playlists: [`${playlistName}`]
     };
@@ -24,46 +60,13 @@ export class SongsService {
   checkDuplicates(track: any, playlistName: string): boolean{
     // bad but error handling if spotify api returns us a null track name
     if (!track) return true;
-    for (const s of this.songs) {
-      if(s.name === track.name){
-        s.playlists.push(playlistName)
+    for (const song of this.songs) {
+      if(song.name === track.name){
+        song.playlists.push(playlistName)
         return true;
       }
     }
     return false;
-  }
-
-  populateSongs(playlistArr: any): void {
-    for (const playlist of playlistArr){
-      this.spotify.getPlaylistSongs(playlist.tracks.href).pipe(
-        map((response) => {
-          (
-            response.items.map(
-              (trackObj: any) => {
-              let duplicateFound = this.checkDuplicates(trackObj.track, playlist.name);
-              if(!duplicateFound) this.songs.push(this.parseSongObject(trackObj, playlist.name));
-            }))
-        })
-      ).subscribe()
-    }
-  }
-
-  // if our response contains next it means theres more playlists we need to get
-  // we increment the offset
-  getPlaylist(offset: number){
-    this.spotify.getPlaylists(offset.toString()).subscribe(
-        (response: any) => {
-        this.populateSongs(response.items)
-        if (response.next) this.getPlaylist(offset + 20);
-      })
-  }
-
-  // tried to create my own promise from the recursive calling but it ended up being kind of confusing
-  // actually have no idea how its not working, i think its because the recursive function pushes the calls onto the stack
-  // and dont return until its all done
-  getSongs(){
-    this.getPlaylist(0)
-    return this.songs
   }
 
   constructor(private spotify: SpotifyApiService) { }
