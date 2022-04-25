@@ -11,8 +11,8 @@ import {SongsService} from "../services/songs.service";
 
 })
 export class SongsComponent implements OnInit {
-
   songs: Song[] = [];
+
   @Input() filterSong?: string = '';
 
   onTermChange(searchTerm: string){

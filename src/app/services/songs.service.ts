@@ -7,12 +7,12 @@ import {map, Observable} from "rxjs";
   providedIn: 'root'
 })
 export class SongsService {
-  songs: Song[] = [];
+  private _songs: Song[] = [];
 
   getSongs(){
     this.getPlaylists(0)
       .subscribe((playlists: any) => this.parsePlaylists(playlists));
-    return this.songs;
+    return this._songs;
   }
 
   // if our response contains next it means theres more playlists we need to get
@@ -37,13 +37,12 @@ export class SongsService {
     return map((response: any) => {
         response.items.map(
           (spotifyTrack: any) => {
-            let duplicateFound = this.checkDuplicates(spotifyTrack.track, playlistName);
-            if(!duplicateFound) this.songs.push(this.castSpotifyTrackToSong(spotifyTrack, playlistName));
+            let isDuplicate = this.checkDuplicate(spotifyTrack.track, playlistName);
+            if(!isDuplicate) this._songs.push(this.castSpotifyTrackToSong(spotifyTrack, playlistName));
           }
         )
       })
   }
-
 
   castSpotifyTrackToSong(spotifyTrack: any, playlistName: string):Song {
     return {
@@ -57,10 +56,10 @@ export class SongsService {
     };
   }
 
-  checkDuplicates(track: any, playlistName: string): boolean{
+  checkDuplicate(track: any, playlistName: string): boolean{
     // bad but error handling if spotify api returns us a null track name
     if (!track) return true;
-    for (const song of this.songs) {
+    for (const song of this._songs) {
       if(song.name === track.name){
         song.playlists.push(playlistName)
         return true;
