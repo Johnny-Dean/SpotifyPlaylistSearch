@@ -10,18 +10,17 @@ export class SongsService {
   private _songs: Song[] = [];
 
   getSongs(){
-    this.getPlaylists(0)
-      .subscribe((playlists: any) => this.parsePlaylists(playlists));
     return this._songs;
   }
 
   // if our response contains next it means theres more playlists we need to get
   // we increment the offset to get the next batch of spotify playlists
   getPlaylists(offset: number): Observable<any> {
-   return this.spotify.getPlaylistCollection(offset).pipe(
+    return this.spotify.getPlaylistCollection(offset).pipe(
       map((playlistCollection: any) => {
+        // console.log(playlistCollection)
         if (playlistCollection.next) this.getPlaylists(offset + 20);
-        return playlistCollection.items;
+        return this.parsePlaylists(playlistCollection.items);
       }))
   }
 
@@ -68,5 +67,7 @@ export class SongsService {
     return false;
   }
 
-  constructor(private spotify: SpotifyApiService) { }
+  constructor(private spotify: SpotifyApiService) {
+    this.getPlaylists(0).subscribe();
+  }
 }

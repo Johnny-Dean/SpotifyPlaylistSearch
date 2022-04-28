@@ -1,7 +1,35 @@
 .mat-card {
-  min-height: 400px;
+  display: inline-block;
   border: black 1px solid;
+  margin: 0;
+  padding: 0;
 }
+
 .song-container{
-  margin: 20px;
+  padding-bottom: 1em;
+}
+
+img.mat-card-image {
+  margin: 0;
+}
+
+.mat-card img {
+  filter: brightness(.75);
+  height: 25em;
+  width: 25em;
+}
+
+.song-tiles {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 1em 1em;
+}
+
+.song-name-artist {
+  color: white;
+  position: absolute;
+  bottom: .5em;
+  margin-left: 1em;
 }
